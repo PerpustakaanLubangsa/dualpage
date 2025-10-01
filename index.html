@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +15,6 @@
       color: #e0e0e0;
     }
 
-    /* Sidebar */
     .sidebar {
       width: 250px;
       background-color: #1e1e1e;
@@ -27,7 +27,6 @@
       overflow: hidden;
     }
 
-    /* Garis vertikal tipis */
     .sidebar::after {
       content: "";
       position: absolute;
@@ -35,10 +34,9 @@
       right: 0;
       width: 2px;
       height: 100%;
-      background: linear-gradient(to bottom, rgba(0,188,212,0.5), rgba(0,188,212,0));
+      background: linear-gradient(to bottom, rgba(0, 188, 212, 0.5), rgba(0, 188, 212, 0));
     }
 
-    /* Background garis diagonal lembut */
     .sidebar::before {
       content: "";
       position: absolute;
@@ -46,52 +44,39 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-image: repeating-linear-gradient(
-        45deg,
-        rgba(255, 255, 255, 0.03) 0px,
-        rgba(255, 255, 255, 0.03) 1px,
-        transparent 1px,
-        transparent 20px
-      );
+      background-image: repeating-linear-gradient(45deg,
+          rgba(255, 255, 255, 0.03) 0px,
+          rgba(255, 255, 255, 0.03) 1px,
+          transparent 1px,
+          transparent 20px);
       pointer-events: none;
     }
 
-    /* Logo profil */
     .logo-wrapper {
       width: 140px;
       height: 140px;
       border-radius: 50%;
-      border: 4px solid #00BCD4; /* cincin cyan */
+      border: 4px solid #00BCD4;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
       margin-bottom: 15px;
-      background-color: #fff; /* opsional, biar logo lebih kontras */
+      background-color: #fff;
       z-index: 1;
     }
 
-    /* Opsi 1: logo full terlihat */
     .logo-wrapper img {
       width: 100%;
       height: 100%;
-      object-fit: contain; 
+      object-fit: contain;
     }
 
-    /* --- Kalau mau logo penuh lingkaran (tapi bisa terpotong) ganti jadi: ---
-    .logo-wrapper img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    */
-
-    /* Nama perpustakaan */
     .sidebar h2 {
       font-size: 20px;
       margin-bottom: 20px;
       color: #00BCD4;
-      font-weight: 900; /* super tebal */
+      font-weight: 900;
       text-align: center;
       letter-spacing: 0.6px;
       position: relative;
@@ -104,11 +89,10 @@
       width: 60%;
       height: 2px;
       margin: 12px auto 0;
-      background: rgba(0,188,212,0.4);
+      background: rgba(0, 188, 212, 0.4);
       border-radius: 2px;
     }
 
-    /* Navigasi */
     .nav {
       width: 100%;
       display: flex;
@@ -131,7 +115,7 @@
     }
 
     .nav button:hover {
-      background: rgba(0,188,212,0.2);
+      background: rgba(0, 188, 212, 0.2);
       transform: translateX(5px);
     }
 
@@ -141,7 +125,6 @@
       font-weight: 600;
     }
 
-    /* Konten */
     .content {
       flex: 1;
       display: flex;
@@ -149,7 +132,8 @@
       position: relative;
     }
 
-    iframe {
+    iframe,
+    .quotes {
       position: absolute;
       top: 0;
       left: 0;
@@ -157,19 +141,42 @@
       height: 100%;
       border: none;
       display: none;
-    }
-
-    iframe.active {
-      display: block;
+      background-color: #121212;
+      color: #00BCD4;
       animation: fadeIn 0.4s ease;
     }
 
+    iframe.active,
+    .quotes.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+    }
+
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .quotes p {
+      font-size: 48px;
+      /* font besar */
+      font-weight: 900;
+      /* super tebal */
+      margin: 0;
+      padding: 0 20px;
+      white-space: pre-wrap;
     }
   </style>
 </head>
+
 <body>
   <div class="sidebar">
     <div class="logo-wrapper">
@@ -181,23 +188,120 @@
       <button id="btnCatatan" onclick="showPage('catatan')">Catatan Pengunjung</button>
     </div>
   </div>
+
   <div class="content">
     <iframe id="pencarian" src="https://library.lubangsa.org/" class="active"></iframe>
     <iframe id="catatan" src="https://perpustakaanlubangsa.github.io/pengunjung/"></iframe>
+
+    <div id="quotes" class="quotes">
+      <p id="quoteText"></p>
+    </div>
   </div>
 
   <script>
+    const quotes = [
+      "Buku adalah jendela dunia.",
+      "Membaca adalah perjalanan tanpa batas.",
+      "Ilmu itu cahaya, membaca adalah lentera.",
+      "Membaca bukan hanya untuk tahu, tapi untuk memahami.",
+      "Hari tanpa membaca adalah hari yang hilang."
+    ];
+
+    let idleTimer;
+    const idleLimit = 10000; // 60 detik sebelum quotes muncul
+    let lastActivePage = 'pencarian';
+    let typingInterval;
+    let quoteInterval;
+    let currentQuoteIndex = -1;
+
+    function resetIdleTimer() {
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => {
+        lastActivePage = getCurrentPage();
+        showQuotes();
+      }, idleLimit);
+    }
+
+    ["mousemove", "keydown", "click", "scroll"].forEach(evt => {
+      window.addEventListener(evt, () => {
+        if (document.getElementById('quotes').classList.contains('active')) {
+          showPage(lastActivePage);
+        }
+        resetIdleTimer();
+      });
+    });
+
+    function getCurrentPage() {
+      const frames = document.querySelectorAll("iframe");
+      for (let f of frames) {
+        if (f.classList.contains('active')) return f.id;
+      }
+      return 'pencarian';
+    }
+
     function showPage(page) {
-      document.querySelectorAll("iframe").forEach(el => el.classList.remove("active"));
+      document.querySelectorAll("iframe, .quotes").forEach(el => el.classList.remove("active"));
       document.getElementById(page).classList.add("active");
 
       document.querySelectorAll(".nav button").forEach(el => el.classList.remove("active"));
-      if (page === "pencarian") {
-        document.getElementById("btnPencarian").classList.add("active");
-      } else {
-        document.getElementById("btnCatatan").classList.add("active");
-      }
+      if (page === "pencarian") document.getElementById("btnPencarian").classList.add("active");
+      else if (page === "catatan") document.getElementById("btnCatatan").classList.add("active");
+
+      clearInterval(typingInterval);
+      clearInterval(quoteInterval);
     }
+
+    function typeEffect(text, callback) {
+      const quoteElem = document.getElementById("quoteText");
+      let i = 0;
+      quoteElem.textContent = '';
+      clearInterval(typingInterval);
+      typingInterval = setInterval(() => {
+        if (i < text.length) {
+          quoteElem.textContent += text[i];
+          i++;
+        } else {
+          clearInterval(typingInterval);
+          if (callback) callback();
+        }
+      }, 50);
+    }
+
+    function deleteEffect(callback) {
+      const quoteElem = document.getElementById("quoteText");
+      clearInterval(typingInterval);
+      typingInterval = setInterval(() => {
+        if (quoteElem.textContent.length > 0) {
+          quoteElem.textContent = quoteElem.textContent.slice(0, -1);
+        } else {
+          clearInterval(typingInterval);
+          if (callback) callback();
+        }
+      }, 30);
+    }
+
+    function showQuotes() {
+      document.querySelectorAll("iframe, .quotes").forEach(el => el.classList.remove("active"));
+      const quotesDiv = document.getElementById("quotes");
+      quotesDiv.classList.add("active");
+
+      function nextQuote() {
+        let newIndex;
+        do {
+          newIndex = Math.floor(Math.random() * quotes.length);
+        } while (newIndex === currentQuoteIndex);
+        currentQuoteIndex = newIndex;
+        typeEffect(quotes[currentQuoteIndex]);
+      }
+
+      nextQuote();
+      quoteInterval = setInterval(() => {
+        deleteEffect(nextQuote);
+      }, 30000); // setiap 30 detik
+    }
+
+    resetIdleTimer();
   </script>
 </body>
+
 </html>
