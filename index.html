@@ -1,143 +1,136 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Perpustakaan Lubangsa</title>
-<style>
-body {margin:0;font-family:'Inter',Arial,sans-serif;display:flex;height:100vh;background-color:#121212;color:#e0e0e0;}
-.sidebar {width:250px;background-color:#1e1e1e;display:flex;flex-direction:column;align-items:center;padding:20px 0;box-shadow:2px 0 8px rgba(0,0,0,0.6);position:relative;overflow:hidden;}
-.logo-wrapper {width:140px;height:140px;border-radius:50%;border:4px solid #00BCD4;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:15px;background-color:#fff;z-index:1;}
-.logo-wrapper img {width:100%;height:100%;object-fit:contain;}
-.sidebar h2 {font-size:20px;margin-bottom:20px;color:#00BCD4;font-weight:900;text-align:center;letter-spacing:0.6px;position:relative;z-index:1;}
-.nav {width:100%;display:flex;flex-direction:column;gap:10px;z-index:1;}
-.nav button {background:none;border:none;color:#e0e0e0;padding:12px;text-align:left;font-size:16px;cursor:pointer;width:100%;border-radius:8px;transition:background 0.3s, transform 0.2s;}
-.nav button:hover {background: rgba(0,188,212,0.2);transform: translateX(5px);}
-.nav button.active {background:#00BCD4;color:#121212;font-weight:600;}
-.content {flex:1;display:flex;flex-direction:column;position:relative;}
-iframe, .quotes {position:absolute;top:0;left:0;width:100%;height:100%;border:none;display:none;background-color:#121212;color:#00BCD4;animation:fadeIn 0.4s ease;}
-iframe.active, .quotes.active {display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;}
-@keyframes fadeIn {from{opacity:0;}to{opacity:1;}}
-.quotes p {font-size:48px;font-weight:900;margin:0;padding:0 20px;white-space:pre-wrap;text-align:center;}
-/* overlay transparan di atas iframe */
-#iframeOverlay {
-  position:absolute;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  z-index:10;
-  background-color:transparent;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perpustakaan Lubangsa</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', Arial, sans-serif;
+      display: flex;
+      height: 100vh;
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #1e1e1e;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 0;
+      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.6);
+    }
+
+    .logo-wrapper {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 4px solid #00BCD4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: 15px;
+      background-color: #fff;
+    }
+
+    .logo-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .sidebar h2 {
+      font-size: 20px;
+      margin-bottom: 20px;
+      color: #00BCD4;
+      font-weight: 900;
+      text-align: center;
+      letter-spacing: 0.6px;
+    }
+
+    .nav {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .nav button {
+      background: none;
+      border: none;
+      color: #e0e0e0;
+      padding: 12px;
+      text-align: left;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      border-radius: 8px;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .nav button:hover {
+      background: rgba(0, 188, 212, 0.2);
+      transform: translateX(5px);
+    }
+
+    .nav button.active {
+      background: #00BCD4;
+      color: #121212;
+      font-weight: 600;
+    }
+
+    .content {
+      flex: 1;
+      display: flex;
+      position: relative;
+    }
+
+    iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: none;
+    }
+
+    iframe.active {
+      display: block;
+    }
+  </style>
 </head>
+
 <body>
-<div class="sidebar">
-  <div class="logo-wrapper"><img src="logo.png" alt="Logo Perpustakaan"></div>
-  <h2>Perpustakaan Lubangsa</h2>
-  <div class="nav">
-    <button id="btnPencarian" class="active" onclick="showPage('pencarian')">Pencarian</button>
-    <button id="btnCatatan" onclick="showPage('catatan')">Catatan Pengunjung</button>
+  <div class="sidebar">
+    <div class="logo-wrapper"><img src="logo.png" alt="Logo Perpustakaan"></div>
+    <h2>Perpustakaan Lubangsa</h2>
+    <div class="nav">
+      <button id="btnPencarian" class="active" onclick="showPage('pencarian')">Pencarian</button>
+      <button id="btnCatatan" onclick="showPage('catatan')">Catatan Pengunjung</button>
+    </div>
   </div>
-</div>
 
-<div class="content">
-  <iframe id="pencarian" src="https://library.lubangsa.org/" class="active"></iframe>
-  <iframe id="catatan" src="https://perpustakaanlubangsa.github.io/pengunjung/"></iframe>
-  <div id="quotes" class="quotes"><p id="quoteText"></p></div>
-  <div id="iframeOverlay"></div>
-</div>
+  <div class="content">
+    <iframe id="pencarian" src="https://library.lubangsa.org/" class="active"></iframe>
+    <iframe id="catatan" src="https://perpustakaanlubangsa.github.io/pengunjung/"></iframe>
+  </div>
 
-<script>
-const quotes = [
-  "Hadapi setiap tantangan dengan senyuman dan hati yang lapang. Ingatlah, matahari selalu terbit lagi, membawa harapan baru. ~Gemini",
-  "Kesabaran itu bukan berarti diam, tapi tetap tenang sambil terus berusaha. ~ChatGpt",
-  "Jangan takut berjalan pelan, yang penting jangan berhenti. ~ChatGpt",
-  "Hidup itu bukan soal siapa yang paling cepat sampai, tapi siapa yang paling konsisten melangkah. ~ChatGpt",
-  "Kamu Bisa Jika Kamu Berpikir Kamu Bisa ~Adlan M.R",
-  "Library Is The Place To Release Your Imagination ~Mundzir AR",
-  "Buku Adalah Jendela Tanpa Harus Membuka Jendelanya ~Fikri",
-  "Every Steps is Your Better ~Mundzir AR"
-];
+  <script>
+    function showPage(page) {
+      document.querySelectorAll('iframe').forEach(f => f.classList.remove('active'));
+      document.getElementById(page).classList.add('active');
 
-let lastActivePage = 'pencarian';
-let typingInterval = null;
-let quoteInterval = null;
-let currentQuoteIndex = -1;
-const idleLimit = 10000; 
-let idleTimeout = null;
-let showingQuotes = false;
-
-// --- Reset aktivitas ---
-function resetIdle(){
-  clearTimeout(idleTimeout);
-  idleTimeout = setTimeout(triggerQuotes, idleLimit);
-
-  if(showingQuotes){
-    stopQuotes();
-    showPage(lastActivePage,false);
-  }
-}
-
-// --- Event listener untuk seluruh page + overlay ---
-["mousemove","keydown","click","scroll"].forEach(evt => window.addEventListener(evt,resetIdle));
-document.getElementById('iframeOverlay').addEventListener('mousemove',resetIdle);
-document.getElementById('iframeOverlay').addEventListener('click',resetIdle);
-
-// --- Halaman ---
-function getCurrentPage(){
-  const frames=document.querySelectorAll("iframe");
-  for(let f of frames) if(f.classList.contains('active')) return f.id;
-  return 'pencarian';
-}
-
-function showPage(page, hideQuotes=true){
-  if(hideQuotes) stopQuotes();
-  lastActivePage = page;
-  document.querySelectorAll("iframe,.quotes").forEach(el=>el.classList.remove('active'));
-  document.getElementById(page).classList.add("active");
-  document.querySelectorAll(".nav button").forEach(el=>el.classList.remove("active"));
-  if(page==="pencarian") document.getElementById("btnPencarian").classList.add("active");
-  else if(page==="catatan") document.getElementById("btnCatatan").classList.add("active");
-}
-
-// --- Typing effect ---
-function typeEffect(text,callback){
-  const elem=document.getElementById("quoteText"); let i=0; elem.textContent=''; clearInterval(typingInterval);
-  typingInterval = setInterval(()=>{ if(i<text.length) elem.textContent+=text[i++]; else {clearInterval(typingInterval); if(callback)callback();}},50);
-}
-
-function deleteEffect(callback){
-  const elem=document.getElementById("quoteText"); clearInterval(typingInterval);
-  typingInterval = setInterval(()=>{ if(elem.textContent.length>0) elem.textContent=elem.textContent.slice(0,-1); else {clearInterval(typingInterval); if(callback)callback();}},30);
-}
-
-// --- Show / Stop quotes ---
-function stopQuotes(){
-  clearInterval(quoteInterval);
-  clearInterval(typingInterval);
-  document.getElementById('quotes').classList.remove('active');
-  showingQuotes=false;
-}
-
-function triggerQuotes(){
-  if(showingQuotes) return;
-  showingQuotes=true;
-  document.querySelectorAll("iframe,.quotes").forEach(el=>el.classList.remove("active"));
-  document.getElementById("quotes").classList.add("active");
-
-  function nextQuote(){
-    let idx; do{ idx=Math.floor(Math.random()*quotes.length);}while(idx===currentQuoteIndex);
-    currentQuoteIndex=idx; typeEffect(quotes[currentQuoteIndex]);
-  }
-
-  nextQuote();
-  quoteInterval=setInterval(()=>{ deleteEffect(nextQuote); },30000);
-}
-
-// --- Start idle timer ---
-idleTimeout = setTimeout(triggerQuotes, idleLimit);
-
-</script>
+      document.querySelectorAll('.nav button').forEach(btn => btn.classList.remove('active'));
+      if (page === 'pencarian') document.getElementById('btnPencarian').classList.add('active');
+      else if (page === 'catatan') document.getElementById('btnCatatan').classList.add('active');
+    }
+  </script>
 </body>
+
 </html>
